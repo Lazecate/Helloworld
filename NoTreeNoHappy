@@ -1,0 +1,117 @@
+String buffer="";
+String leaf="";
+int letterW=75,letterH=75;
+float Tl=50;  
+float[] alpha={0,0.2*PI,0.4*PI,0.6*PI,0.8*PI};
+float cX=100,cY=350;
+float postX=0,postY=0;
+int i,j=0;
+PImage icon;
+FloatList Tx,Ty;
+float theta=0;
+float Mx=250,My=350;
+
+void setup(){
+size(500,500);
+background(0);
+colorMode(HSB);
+
+fill(20,135,100);
+stroke(20,135,100,100);
+
+icon=loadImage("leaf01.png");
+PFont font=createFont("MicrosoftYaHei-24.vlw",24);
+textFont(font);
+//textSize(24);
+smooth();
+Tx=new FloatList();
+Ty=new FloatList();
+}
+
+void draw(){
+    
+ if(cY<20||cY>500){
+   cY=350;  
+ }
+if(cX<0||cX>500){
+   cX=200;
+ }
+
+ if (Tl<6){
+    cX=random(100,450);
+    cY=random(250,350);
+    Mx=random(150,400);
+    My=random(200,350);
+    Tl=50;
+   }
+}
+
+void keyPressed(){
+ char keyIn=key;
+   
+   if(key==ENTER) {
+    leaf=buffer;
+    buffer="";
+    postX=cX;
+    postY=cY;
+    
+    fill(200,0,255);
+         
+    
+        
+    strokeWeight(3);
+    textSize(Tl*0.6);
+    text(leaf,postX,postY);  //print the leaf at cX,cY
+    float op=map(Tl, 6,50,50,150);
+    fill(cX,Mx,op,op);
+    strokeWeight(1);    
+    
+    line(Mx,My,cX,cY);
+    
+    //tint(int(random(Mx)),255,255,op);
+    //image(icon,postX,postY,0.7*Tl,0.7*Tl);
+    imageMode(CENTER);
+    ellipse(postX,postY,0.7*Tl,0.7*Tl);
+    
+    if(j<5){
+      
+    if(j>0){
+    theta=random(alpha[j]+alpha[j-1], PI);}
+    else{ theta=random(alpha[j], PI*2/3);}
+     
+    Tx.append(cX);
+    Ty.append(cY);
+    
+    cX=postX+Tl*cos(theta);
+    cY=postY-Tl*sin(theta);
+    j=j+1;
+    
+    }
+    else { //
+    j=0;
+    Tl*=0.7;
+    int index=int(random(5));
+    
+    cX=Tx.get(index);
+    cY=Ty.get(index);
+    Mx=cX;
+    My=cY;
+    Tx.clear();
+    Ty.clear();   
+    }
+    // println(Tl);
+    float dl=dist(cX,cY,Mx,My);
+    println(dl,op);
+  }
+  else{
+  buffer=buffer+keyIn;   //if key!=ENTER, store key in buffer
+  }
+  
+  if(key==CODED){   //save frame if press 'ctrl'
+    
+    if(keyCode==CONTROL) {
+       saveFrame("screen.png");
+      }
+  }
+}
+
